@@ -30,7 +30,7 @@ const routes = [{
 }, ]
 
 const router = createRouter({
-    history: createWebHashHistory(`/Game-Account-Shop-App/`),
+    history: createWebHashHistory(import.meta.env.BASE_URL),
     routes,
 })
 
