@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 
+const baseURL = window.URL_CONFIG?.BASE_URL || '/admin'
 const request = axios.create({
-  baseURL: '/admin',
+  baseURL,
   timeout: 10000,
 })
 
