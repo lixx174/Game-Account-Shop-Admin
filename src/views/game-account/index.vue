@@ -68,6 +68,12 @@
           <a-tag v-for="(img, idx) in formData.images" :key="idx" closable @close="onRemoveImage(idx)">{{ img }}</a-tag>
         </div>
       </a-form-item>
+      <a-form-item label="流程" name="process">
+        <a-textarea v-model:value="formData.process" placeholder="请输入流程" :rows="2" />
+      </a-form-item>
+      <a-form-item label="政策" name="policy">
+        <a-textarea v-model:value="formData.policy" placeholder="请输入政策" :rows="2" />
+      </a-form-item>
       <a-form-item label="备注" name="remark">
         <a-textarea v-model:value="formData.remark" placeholder="请输入备注" :rows="3" />
       </a-form-item>
@@ -95,7 +101,7 @@ const isEdit = ref(false)
 const formData = reactive({
   id: null, gameId: undefined, title: '', originId: undefined,
   serverId: undefined, systemId: undefined, tagIds: [],
-  price: 0, images: [], remark: '',
+  price: 0, images: [], process: '', policy: '', remark: '',
 })
 const imageInput = ref('')
 
@@ -125,6 +131,8 @@ const columns = [
   { title: '系统', dataIndex: 'systemName', width: 100 },
   { title: '标签', dataIndex: 'tags', width: 150, customRender: ({ text }) => text?.join(', ') || '-' },
   { title: '价格', dataIndex: 'price', width: 100 },
+  { title: '流程', dataIndex: 'process', ellipsis: true, width: 120 },
+  { title: '政策', dataIndex: 'policy', ellipsis: true, width: 120 },
   { title: '备注', dataIndex: 'remark', ellipsis: true },
   { title: '创建时间', dataIndex: 'createAt', width: 180 },
   { title: '操作', key: 'action', width: 160 },
@@ -198,7 +206,7 @@ async function onAdd() {
   Object.assign(formData, {
     id: null, gameId: query.gameId, title: '', originId: undefined,
     serverId: undefined, systemId: undefined, tagIds: [],
-    price: 0, images: [], remark: '',
+    price: 0, images: [], process: '', policy: '', remark: '',
   })
   await loadDictionaryData()
   modalOpen.value = true
@@ -206,11 +214,20 @@ async function onAdd() {
 
 async function onEdit(record) {
   isEdit.value = true
+  const detail = await store.fetchDetail(record.id)
   Object.assign(formData, {
-    ...record,
-    gameId: record.gameId || query.gameId,
-    tagIds: record.tagIds || [],
-    images: record.images || [],
+    id: detail.id,
+    gameId: query.gameId,
+    title: detail.title,
+    originId: detail.originId,
+    serverId: detail.serverId,
+    systemId: detail.systemId,
+    tagIds: detail.tagIds || [],
+    price: detail.price,
+    images: detail.images || [],
+    process: detail.process || '',
+    policy: detail.policy || '',
+    remark: detail.remark || '',
   })
   await loadDictionaryData()
   modalOpen.value = true
