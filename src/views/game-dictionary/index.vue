@@ -149,9 +149,16 @@ function onAdd() {
   modalOpen.value = true
 }
 
-function onEdit(record) {
+async function onEdit(record) {
   isEdit.value = true
-  Object.assign(formData, { ...record, gameId: record.gameId ? String(record.gameId) : String(gameNameMap.value[record.gameName]) })
+  const detail = await store.fetchDetail(record.id)
+  Object.assign(formData, {
+    id: detail.id,
+    gameId: detail.gameId ? String(detail.gameId) : undefined,
+    gameDictionary: detail.gameDictionary,
+    name: detail.name,
+    remark: detail.remark || '',
+  })
   modalOpen.value = true
 }
 

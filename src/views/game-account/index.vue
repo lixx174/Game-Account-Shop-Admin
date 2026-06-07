@@ -213,7 +213,7 @@ async function onEdit(record) {
   const detail = await store.fetchDetail(record.id)
   Object.assign(formData, {
     id: detail.id,
-    gameId: query.gameId,
+    gameId: detail.gameId,
     title: detail.title,
     originId: detail.originId,
     serverId: detail.serverId,
