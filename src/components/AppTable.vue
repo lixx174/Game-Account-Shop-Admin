@@ -18,7 +18,7 @@
         :text="text"
         :record="record"
       >
-        <span>{{ text }}</span>
+        <span>{{column.customRender ? column.customRender({ text, record }) : text }}</span>
       </slot>
       <slot v-else name="action" :record="record"         :column="column"
         :text="text">

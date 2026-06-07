@@ -101,7 +101,10 @@ const gameNameMap = computed(() =>
 const columns = [
   { title: 'ID', dataIndex: 'id', width: 80 },
   { title: '游戏', dataIndex: 'gameName' },
-  { title: '字典类型', dataIndex: 'gameDictionary', customRender: ({ text }) => dictionaryTypeMap[text] || text || '-' },
+  { title: '字典类型', dataIndex: 'gameDictionary', customRender: ({ text }) => {
+    console.log({ text ,dictionaryTypeMap , value: dictionaryTypeMap[text] });
+   return dictionaryTypeMap[text] || text || '-'
+  } },
   { title: '名称', dataIndex: 'name' },
   { title: '备注', dataIndex: 'remark', ellipsis: true },
   { title: '创建时间', dataIndex: 'createAt', width: 180 },
