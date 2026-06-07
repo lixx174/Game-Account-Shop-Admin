@@ -90,14 +90,18 @@ const dictionaryTypeOptions = [
   { label: '账号标签', value: 'ACCOUNT_TAG' },
 ]
 
+const dictionaryTypeMap = Object.fromEntries(dictionaryTypeOptions.map((o) => [o.value, o.label]))
+
 const gameOptions = computed(() =>
   (gameStore.pageData.records || []).map((g) => ({ label: g.name, value: String(g.id) }))
 )
-
+const gameNameMap = computed(() =>
+  Object.fromEntries((gameStore.pageData.records || []).map((g) => [g.name, g.id]))
+)
 const columns = [
   { title: 'ID', dataIndex: 'id', width: 80 },
   { title: '游戏', dataIndex: 'gameName' },
-  { title: '字典类型', dataIndex: 'gameDictionary' },
+  { title: '字典类型', dataIndex: 'gameDictionary', customRender: ({ text }) => dictionaryTypeMap[text] || text || '-' },
   { title: '名称', dataIndex: 'name' },
   { title: '备注', dataIndex: 'remark', ellipsis: true },
   { title: '创建时间', dataIndex: 'createAt', width: 180 },
@@ -147,7 +151,7 @@ function onAdd() {
 
 function onEdit(record) {
   isEdit.value = true
-  Object.assign(formData, { ...record, gameId: String(record.gameId) })
+  Object.assign(formData, { ...record, gameId: record.gameId ? String(record.gameId) : String(gameNameMap.value[record.gameName]) })
   modalOpen.value = true
 }
 
@@ -166,9 +170,10 @@ const rules = {
 async function onModalOk(values) {
   modalLoading.value = true
   try {
-    const payload = { ...values }
+    const payload = { ...values };
+    console.log({ payload });
     if (isEdit.value) {
-      await store.modify({ id: formData.id, name: payload.name, remark: payload.remark })
+      await store.modify({ ...payload })
       message.success('修改成功')
     } else {
       await store.create(payload)
