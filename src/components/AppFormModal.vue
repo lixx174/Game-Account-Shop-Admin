@@ -10,7 +10,7 @@
   >
     <a-form
       ref="formRef"
-      :model="formState"
+      :model="props.initialValues"
       :rules="rules"
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 16 }"
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -35,24 +35,22 @@ const props = defineProps({
 const emit = defineEmits(['ok', 'cancel'])
 
 const formRef = ref()
-const formState = reactive({})
 
 watch(
   () => props.open,
   (val) => {
-    if (val) {
-      Object.keys(formState).forEach((key) => delete formState[key])
-      Object.assign(formState, props.initialValues)
+    if (!val) {
+      formRef.value?.resetFields()
     }
-  },
-  { immediate: true }
+  }
 )
 
 async function onOk() {
   try {
     await formRef.value.validate()
-    emit('ok', { ...formState })
-  } catch {
+    emit('ok', { ...props.initialValues })
+  } catch (error) {
+    console.log('Validation failed', error)
     // 校验失败不处理
   }
 }
@@ -61,9 +59,5 @@ function onCancel() {
   emit('cancel')
 }
 
-function resetFields() {
-  formRef.value?.resetFields()
-}
-
-defineExpose({ resetFields })
+defineExpose({ resetFields: () => formRef.value?.resetFields() })
 </script>

@@ -63,10 +63,7 @@
         <a-input-number v-model:value="formData.price" style="width: 100%" :min="0" :precision="2" placeholder="请输入价格" />
       </a-form-item>
       <a-form-item label="账号截图" name="images">
-        <a-input v-model:value="imageInput" placeholder="输入图片URL后回车添加" @press-enter="onAddImage" />
-        <div v-if="formData.images?.length" style="margin-top: 8px">
-          <a-tag v-for="(img, idx) in formData.images" :key="idx" closable @close="onRemoveImage(idx)">{{ img }}</a-tag>
-        </div>
+        <AppImageUpload v-model:model-value="formData.images" :max-count="9" accept="image/png,image/jpeg,image/gif,image/webp" />
       </a-form-item>
       <a-form-item label="流程" name="process">
         <a-textarea v-model:value="formData.process" placeholder="请输入流程" :rows="2" />
@@ -89,6 +86,7 @@ import { useGameStore } from '@/stores/game'
 import { useGameDictionaryStore } from '@/stores/gameDictionary'
 import AppTable from '@/components/AppTable.vue'
 import AppFormModal from '@/components/AppFormModal.vue'
+import AppImageUpload from '@/components/AppImageUpload.vue'
 
 const store = useGameAccountStore()
 const gameStore = useGameStore()
@@ -103,8 +101,6 @@ const formData = reactive({
   serverId: undefined, systemId: undefined, tagIds: [],
   price: 0, images: [], process: '', policy: '', remark: '',
 })
-const imageInput = ref('')
-
 const modalTitle = computed(() => (isEdit.value ? '编辑账号' : '新增账号'))
 
 const gameOptions = computed(() =>
@@ -237,18 +233,6 @@ async function onDelete(id) {
   await store.remove(id)
   message.success('删除成功')
   store.fetchPage({ ...query })
-}
-
-function onAddImage() {
-  const url = imageInput.value.trim()
-  if (!url) return
-  if (!formData.images) formData.images = []
-  formData.images.push(url)
-  imageInput.value = ''
-}
-
-function onRemoveImage(idx) {
-  formData.images.splice(idx, 1)
 }
 
 const rules = {

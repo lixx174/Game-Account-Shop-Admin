@@ -35,7 +35,7 @@
         <a-input v-model:value="formData.name" placeholder="请输入游戏名称" />
       </a-form-item>
       <a-form-item label="图标地址" name="icon">
-        <a-input v-model:value="formData.icon" placeholder="请输入图标地址" />
+        <AppImageUpload v-model:model-value="formData.icon" single accept="image/png,image/jpeg,image/webp" />
       </a-form-item>
     </AppFormModal>
   </div>
@@ -47,6 +47,7 @@ import { message } from 'ant-design-vue'
 import { useGameStore } from '@/stores/game'
 import AppTable from '@/components/AppTable.vue'
 import AppFormModal from '@/components/AppFormModal.vue'
+import AppImageUpload from '@/components/AppImageUpload.vue'
 
 const store = useGameStore()
 const query = reactive({ name: '' })
