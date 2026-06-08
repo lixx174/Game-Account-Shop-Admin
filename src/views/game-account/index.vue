@@ -41,6 +41,9 @@
       @ok="onModalOk"
       @cancel="onModalCancel"
     >
+      <a-form-item label="账号编号" name="accountNo">
+        <a-input v-model:value="formData.accountNo" placeholder="请输入账号编号" />
+      </a-form-item>
       <a-form-item label="所属游戏" name="gameId">
         <a-select v-model:value="formData.gameId" placeholder="请选择游戏" :options="gameOptions" />
       </a-form-item>
@@ -97,7 +100,7 @@ const modalOpen = ref(false)
 const modalLoading = ref(false)
 const isEdit = ref(false)
 const formData = reactive({
-  id: null, gameId: undefined, title: '', originId: undefined,
+  id: null, accountNo: '', gameId: undefined, title: '', originId: undefined,
   serverId: undefined, systemId: undefined, tagIds: [],
   price: 0, images: [], process: '', policy: '', remark: '',
 })
@@ -121,6 +124,7 @@ const tagOptions = computed(() => getDictOptions('ACCOUNT_TAG'))
 
 const columns = [
   { title: 'ID', dataIndex: 'id', width: 80 },
+  { title: '账号编号', dataIndex: 'accountNo', width: 140 },
   { title: '标题', dataIndex: 'title' },
   { title: '来源', dataIndex: 'originName', width: 120 },
   { title: '区服', dataIndex: 'serverName', width: 120 },
@@ -200,7 +204,7 @@ function onPageChange(p) {
 async function onAdd() {
   isEdit.value = false
   Object.assign(formData, {
-    id: null, gameId: query.gameId, title: '', originId: undefined,
+    id: null, accountNo: '', gameId: query.gameId, title: '', originId: undefined,
     serverId: undefined, systemId: undefined, tagIds: [],
     price: 0, images: [], process: '', policy: '', remark: '',
   })
@@ -213,6 +217,7 @@ async function onEdit(record) {
   const detail = await store.fetchDetail(record.id)
   Object.assign(formData, {
     id: detail.id,
+    accountNo: detail.accountNo || '',
     gameId: detail.gameId,
     title: detail.title,
     originId: detail.originId,
@@ -236,6 +241,7 @@ async function onDelete(id) {
 }
 
 const rules = {
+  accountNo: [{ required: true, message: '请输入账号编号', trigger: 'blur' }],
   gameId: [{ required: true, message: '请选择游戏', trigger: 'change', type: 'number' }],
   title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
   originId: [{ required: true, message: '请选择来源', trigger: 'change', type: 'number' }],
