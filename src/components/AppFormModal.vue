@@ -5,6 +5,8 @@
     :confirm-loading="loading"
     @ok="onOk"
     @cancel="onCancel"
+    cancelText="取消"
+    okText="确定"
     destroy-on-close
     :width="width"
   >
